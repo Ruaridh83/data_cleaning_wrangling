@@ -1,2 +1,0 @@
-"0","decath_long %>%"
-"0","  filter(event == ""shot_put"", rank <= 3) "

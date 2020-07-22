@@ -1,4 +1,0 @@
-"0","decath <- decath %>% "
-"0","  mutate(athlete_name = str_to_lower(athlete_name))"
-"0",""
-"0","decath"
