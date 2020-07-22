@@ -1,0 +1,2 @@
+"0","decath[decath$long_jump == max(decath$long_jump), ]"
+"2","no non-missing arguments to max; returning -Inf"

@@ -1,0 +1,118 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+Loaded in the dataframe "decathlon.rds" for cleaning and analysis. 
+
+```{r}
+decathlon
+
+```
+
+
+Turns out i want better column names, so i've changed them. Renamed them manually for more control. 
+
+```{r}
+names(decathlon) <- c("100m", "long_Jump", "shot_Put", "high_jump", "400m", "110m_hurdle", "discus", "pole_vault", "javeline", "1500m", "rank", "points", "competition")
+decathlon
+```
+I need an identifier for each row so turned the row names into a column. 
+
+```{r}
+
+decath <- rownames_to_column(decathlon, "athlete_name")
+decath
+
+```
+I need the athletes names all in either upper or lower so they act the same if i'm looking across both competitions. 
+
+```{r}
+decath$Athlete_Name<-sapply(decath$athlete_name, tolower)
+decath
+```
+Who had the longest long jump seen in the data? used max function and selected long jump as the argument within to return the highest value. 
+
+```{r}
+decath[decath$long_jump == max(decath$long_jump), ]
+
+```
+What was the average 100m time in each competition? First i'll find the average of all 100m entries across both competitions. 
+
+```{r}
+avg_100m <- mean(decath$"100m")
+avg_100m
+```
+
+```{r}
+olympic = filter(decath,competition=="OlympicG")
+olympic
+```
+The average time for an olympic 100m is 10.91571 seconds
+```{r}
+olympic_100m <- mean(olympic$"100m")
+olympic_100m
+```
+
+```{r}
+decastar = filter(decath,competition=="Decastar")
+decastar
+```
+The average decastar 100m is 11.17538 seconds. 
+
+```{r}
+decastar_100m <- mean(decastar$"100m")
+decastar_100m
+```
+
+Who had the highest total points across both competitions?
+
+First i've pivoted the table longer to have fewer columns and make the data more manageable. 
+
+```{r}
+decath_long <- decath %>%
+  pivot_longer(cols = ("100m":"1500m"), 
+               names_to = "event", 
+               values_to = "result")
+decath_long
+```
+Here i've returned the athlete with the highest points total between the Olympics & Decastar. 
+
+```{r}
+decath_long %>%
+  distinct(athlete_name, competition, points) %>%
+  group_by(athlete_name) %>%
+  summarise(points_total = sum(points)) %>%
+  arrange(desc(points_total)) %>%
+  head(1)
+```
+
+What was the shot-put scores for the top three competitors in each competition?
+
+```{r}
+decath_long %>%
+  filter(Event=="shot_put", Rank <= 3) 
+```
+
+What was the average points for competitors who ran the 400m in less than 50 seconds vs. those than ran 400m in more than 50 seconds?
+
+Here's the points average of those athletes who ran the 400m in less than 50 seconds. 
+
+```{r}
+decath_long %>%
+  filter(Event=="400m", Result <= 50) %>%
+  summarise_at(c("Points"), mean, na.rm = TRUE)
+```
+Here's the points average of those athletes who ran the 400m in more than 50 seconds. 
+
+```{r}
+decath_long %>%
+  filter(Event=="400m", Result >= 50) %>%
+  summarise_at(c("Points"), mean, na.rm = TRUE)
+```
+

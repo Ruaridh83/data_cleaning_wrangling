@@ -1,0 +1,8 @@
+"0","decath_long %>%"
+"0","  distinct(athlete_name, competition, points) %>%"
+"0","  group_by(athlete_name) %>%"
+"0","  summarise(points_total = sum(points)) %>%"
+"0","  arrange(desc(points_total)) %>%"
+"0","  head(1)"
+"2","`summarise()` ungrouping output (override with `.groups` argument)
+"

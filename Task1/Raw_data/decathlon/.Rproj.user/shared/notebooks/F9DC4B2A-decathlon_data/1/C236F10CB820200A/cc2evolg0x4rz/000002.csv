@@ -1,0 +1,3 @@
+"0","decath_long %>%"
+"0","  filter(event == ""x400m"", result <= 50) %>%"
+"0","  summarise_at(c(""points""), mean, na.rm = TRUE)"

@@ -1,0 +1,2 @@
+"0","decath_long %>%"
+"0","  filter(Event==""Shot_Put"", Rank <= 3) "
