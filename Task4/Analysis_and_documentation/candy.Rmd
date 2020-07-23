@@ -1,0 +1,177 @@
+---
+title: "candy"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(readxl)
+```
+
+```{r}
+library(here)
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+candy_2015 <- read_excel(here("Raw_data/boing-boing-candy-2015.xlsx"))
+candy_2015
+```
+
+```{r}
+candy_2016 <- read_excel(here("Raw_data/boing-boing-candy-2016.xlsx"))
+```
+
+```{r}
+candy_2017 <- read_excel(here("Raw_data/boing-boing-candy-2017.xlsx"))
+```
+
+```{r}
+candy_2015
+```
+
+```{r}
+candy_2016
+```
+```{r}
+candy_2017
+
+```
+
+```{r}
+glimpse(candy_2016)
+```
+
+# adding in a new column to the 2016 data to give it the same number of columns as 2015
+
+
+```{r}
+candy_2016$new <- NULL
+```
+
+#Tidying up the column names so they're consistent across all three and easier to work with. 
+
+```{r}
+candy_2015 <- clean_names(candy_2015)
+candy_2016 <- clean_names(candy_2016)
+candy_2017 <- clean_names(candy_2017)
+```
+
+```{r}
+candy_2015
+
+```
+
+```{r}
+candy_2015_long <- candy_2015 %>%
+  pivot_longer(cols = c("butterfinger":"york_peppermint_patties"), 
+               names_to = "candy_type",
+               values_to = "description")
+
+candy_2015_long 
+```
+
+
+```{r}
+candy_2015_long <- candy_2015_long[grep("^please", colnames(candy_2015_long), invert = TRUE)]
+candy_2015_long
+```
+#removing extraneous columns
+
+```{r}
+candy_2015_long <- select(candy_2015_long, -guess_the_number_of_mints_in_my_hand,  -check_all_that_apply_i_cried_tears_of_sadness_at_the_end_of, 
+-that_dress_that_went_viral_early_this_year_when_i_first_saw_it_it_was, 
+-fill_in_the_blank_taylor_swift_is_a_force_for, 
+-what_is_your_favourite_font, 
+-if_you_squint_really_hard_the_words_intelligent_design_would_look_like, 
+-fill_in_the_blank_imitation_is_a_form_of,
+-sea_salt_flavored_stuff_probably_chocolate_since_this_is_the_it_flavor_of_the_year,
+-necco_wafers, -which_day_do_you_prefer_friday_or_sunday)
+
+candy_2015_long
+```
+```{r}
+candy_2015_long <- select(candy_2015_long, -timestamp, -betty_or_veronica)
+
+candy_2015_long
+```
+
+```{r}
+candy_2015_long
+```
+#renaming columns so they're more easily manageable
+```{r}
+candy_2015_long <- rename(candy_2015_long, age = how_old_are_you)
+```
+
+```{r}
+candy_2015_long <- rename(candy_2015_long, Trick_or_treat = are_you_going_actually_going_trick_or_treating_yourself)
+```
+
+```{r}
+candy_2015_long
+
+```
+
+#adding in a country column because i'll need that to bind the three years on top of each other later. 
+
+```{r}
+candy_2015_long <- mutate(
+  candy_2015_long, country = "n/a"
+)
+```
+
+```{r}
+candy_2015_long
+```
+
+#adding in a gender column because i'll need that too
+
+
+```{r}
+candy_2015_long <- mutate(
+  candy_2015_long, gender = "n/a"
+)
+```
+
+```{r}
+candy_2016
+```
+#starting with renaming columns this time
+
+```{r}
+candy_2016 <- candy_2016 %>% 
+  rename(trick_or_treat = are_you_going_actually_going_trick_or_treating_yourself) 
+```
+
+```{r}
+candy_2016 <- candy_2016 %>% 
+  rename(gender = your_gender) 
+```
+
+```{r}
+candy_2016 <- candy_2016 %>% 
+  rename(age = how_old_are_you) 
+```
+
+```{r}
+colnames(candy_2016)
+```
+#startign to remove useless column names
+
+```{r}
+candy_2016 <-
+  select(candy_2016, -timestamp, -york_peppermint_patties_ignore, -which_day_do_you_prefer_friday_or_sunday)
+
+```
+#removing all those columns that start with please
+```{r}
+candy_2016 <- candy_2016[grep("^please", colnames(candy_2016), invert = TRUE)]
+candy_2016
+```
+

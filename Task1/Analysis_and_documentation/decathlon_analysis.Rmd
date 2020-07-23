@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+
+```
+
+
+```{r}
+decath <- read_csv("../Clean_data/clean_data.csv")
+decath
+
+```
+
+#What was the average 100m time in each competition? First i'll find the average of all 100m entries across both competitions. I'm aware this no longer works because i've changed the way the data was cleaned and flipped it longer earlier in the process and now don't have time to go back and make the necessary changes. 
+
+```{r}
+avg_100m <- mean(decath$"x100m")
+avg_100m
+```
+
+```{r}
+olympic = filter(decath,competition=="OlympicG")
+olympic
+```
+
+The average time for an olympic 100m is 10.91571 seconds
+
+```{r}
+olympic_100m <- mean(olympic$"x100m")
+olympic_100m
+```
+
+```{r}
+decastar = filter(decath,competition=="Decastar")
+decastar
+```
+
+#The average decastar 100m is 11.17538 seconds. 
+
+```{r}
+decastar_100m <- mean(decastar$"x100m")
+decastar_100m
+```
+
+#Here i've returned the athlete with the highest points total between the Olympics & Decastar. This now works because it was at this point during my writing of the initial rmd file i had a dataframe equivalent to decath as it is here. 
+
+
+```{r}
+decath %>%
+  distinct(athlete_name, competition, points) %>%
+  group_by(athlete_name) %>%
+  summarise(points_total = sum(points)) %>%
+  arrange(desc(points_total)) %>%
+  head(1)
+```
+
+What was the shot-put scores for the top three competitors in each competition?
+
+```{r}
+decath_long %>%
+  filter(event == "shot_put", rank <= 3) 
+```
+
+What was the average points for competitors who ran the 400m in less than 50 seconds vs. those than ran 400m in more than 50 seconds?
+
+Here's the points average of those athletes who ran the 400m in less than 50 seconds. 
+
+```{r}
+decath_long %>%
+  filter(event == "x400m", result <= 50) %>%
+  summarise_at(c("points"), mean, na.rm = TRUE)
+```
+Here's the points average of those athletes who ran the 400m in more than 50 seconds. 
+
+```{r}
+decath_long %>%
+  filter(event == "x400m", result >= 50) %>%
+  summarise_at(c("points"), mean, na.rm = TRUE)
+```
