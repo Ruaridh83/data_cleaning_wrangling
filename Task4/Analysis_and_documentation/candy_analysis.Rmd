@@ -1,0 +1,58 @@
+---
+title: "candy_analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+candy_all
+```
+#What is the total number of candy ratings given across the three years. (number of candy ratings, not number of raters. Don’t count missing values
+
+```{r}
+unique(candy_all$candy_type)
+```
+
+```{r}
+ratings <- filter(candy_all, description %in% c("JOY","DESPAIR", "MEH")) 
+nrow(ratings)
+```
+
+#What was the average age of people who are going out trick or treating and the average age of people 3. not going trick or treating?
+
+
+```{r}
+trick_yes <- filter(trick, trick_or_treat == "Yes")
+trick_yes
+```
+
+#average age of those who went trick or treating
+
+```{r}
+mean(trick_yes$age)
+```
+
+#average age of those who did not go trick or treating
+
+```{r}
+trick_no <- filter(trick, trick_or_treat == "No")
+
+```
+
+
+```{r}
+mean(trick_no$age)
+```
+#For each of joy, despair and meh, which candy bar received the most of these ratings?
+
+```{r}
+candy_all %>%
+  filter(description == "JOY") %>%
+  group_by(candy_type) %>%
+  print
+```
+
+
